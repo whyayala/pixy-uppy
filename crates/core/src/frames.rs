@@ -2,7 +2,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::error::PixyError;
+use crate::paths::resolve_tool;
 
+/// Optional denoise/deinterlace/deband filters applied before frame extraction.
 #[derive(Debug, Clone, Copy)]
 pub enum Prefilter {
     Yadif,
@@ -22,6 +24,7 @@ impl Prefilter {
     }
 }
 
+/// Options controlling frame extraction behavior and image format.
 #[derive(Debug, Clone)]
 pub struct FrameExtractOptions {
     pub prefilter: Prefilter,
@@ -34,6 +37,8 @@ impl Default for FrameExtractOptions {
     }
 }
 
+/// Extracts frames from the input using ffmpeg to an output directory.
+/// Why: Upscaler binaries operate on image sequences; we preserve PTS for sync.
 pub fn extract_frames(input: &Path, out_dir: &Path, opts: &FrameExtractOptions) -> Result<PathBuf, PixyError> {
     std::fs::create_dir_all(out_dir)?;
     let pattern = out_dir.join(format!("%08d.{}", opts.frame_format));
@@ -54,7 +59,8 @@ pub fn extract_frames(input: &Path, out_dir: &Path, opts: &FrameExtractOptions) 
 
     args.push(pattern.to_string_lossy().to_string());
 
-    let status = Command::new("ffmpeg").args(args.clone()).status()?;
+    let ffmpeg = resolve_tool("ffmpeg")?;
+    let status = Command::new(ffmpeg).args(args.clone()).status()?;
     if !status.success() {
         return Err(PixyError::ProcessFailed { cmd: format!("ffmpeg {:?}", args), code: status.code(), stderr: String::new() });
     }

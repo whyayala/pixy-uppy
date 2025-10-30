@@ -1,3 +1,4 @@
+/// Supported encoders across vendors and software fallbacks.
 #[derive(Debug, Clone)]
 pub enum EncoderKind {
     H264Nvenc,
@@ -12,6 +13,7 @@ pub enum EncoderKind {
     Libx265,
 }
 
+/// Encoding options exposed to users, mapped to ffmpeg arguments.
 #[derive(Debug, Clone)]
 pub struct EncoderOptions {
     pub encoder: EncoderKind,
@@ -23,6 +25,8 @@ pub struct EncoderOptions {
 }
 
 impl EncoderOptions {
+    /// Converts options to ffmpeg `-c:v`, `-preset`, `-tune`, `-crf`, `-pix_fmt` args.
+    /// Why: Encoders differ, but we expose a consistent API surface to users.
     pub fn to_ffmpeg_args(&self) -> Vec<String> {
         let mut args = Vec::new();
         args.push("-c:v".into());

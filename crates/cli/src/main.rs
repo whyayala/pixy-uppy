@@ -6,7 +6,7 @@ use pixy_core::encoder::{EncoderKind, EncoderOptions};
 use pixy_core::frames::{FrameExtractOptions, Prefilter};
 use pixy_core::models::{curated_models, ModelKind};
 use pixy_core::pipeline::{run_upscale_job, UpscaleJob};
-use pixy_core::upscalers::{UpscalerBinary, UpscalerKind};
+use pixy_core::upscalers::{find_upscaler_binary, UpscalerBinary, UpscalerKind};
 
 #[derive(Parser)]
 #[command(name = "pixy-uppy")] 
@@ -86,12 +86,16 @@ impl From<Filter> for Prefilter {
     }
 }
 
+/// CLI entrypoint. Why: Provide devices/models discovery and an `upscale` command.
 fn main() {
     let cli = Cli::parse();
     match cli.command {
         Commands::Devices => {
-            // try Real-ESRGAN first
-            let devices = detect_vulkan_devices("realesrgan-ncnn-vulkan").unwrap_or_default();
+            // try Real-ESRGAN first; fall back to others
+            let devices = detect_vulkan_devices("realesrgan-ncnn-vulkan")
+                .or_else(|_| detect_vulkan_devices("realcugan-ncnn-vulkan"))
+                .or_else(|_| detect_vulkan_devices("waifu2x-ncnn-vulkan"))
+                .unwrap_or_default();
             if devices.is_empty() { println!("No devices detected (binary not found or no Vulkan devices)"); }
             for d in devices { println!("{}: {}", d.index, d.name); }
         }
@@ -103,10 +107,11 @@ fn main() {
         }
         Commands::Upscale(args) => {
             let model = curated_models().into_iter().find(|m| m.name == args.model).expect("model not found");
-            let upscaler = UpscalerBinary {
-                kind: match model.kind { ModelKind::RealEsrgan => UpscalerKind::RealEsrgan, ModelKind::RealCugan => UpscalerKind::RealCugan, ModelKind::Waifu2x => UpscalerKind::Waifu2x },
-                path: which::which(match model.kind { ModelKind::RealEsrgan => "realesrgan-ncnn-vulkan", ModelKind::RealCugan => "realcugan-ncnn-vulkan", ModelKind::Waifu2x => "waifu2x-ncnn-vulkan" }).expect("upscaler binary not found"),
-            };
+            let upscaler = match model.kind {
+                ModelKind::RealEsrgan => find_upscaler_binary(UpscalerKind::RealEsrgan),
+                ModelKind::RealCugan => find_upscaler_binary(UpscalerKind::RealCugan),
+                ModelKind::Waifu2x => find_upscaler_binary(UpscalerKind::Waifu2x),
+            }.expect("upscaler binary not found");
 
             let job = UpscaleJob {
                 input: args.input,

@@ -3,6 +3,7 @@ use std::process::Command;
 
 use crate::error::PixyError;
 use crate::models::ModelSpec;
+use crate::paths::resolve_tool;
 
 #[derive(Debug, Clone, Copy)]
 pub enum UpscalerKind {
@@ -11,6 +12,7 @@ pub enum UpscalerKind {
     Waifu2x,
 }
 
+/// Represents an upscaler binary by kind and path on disk.
 #[derive(Debug, Clone)]
 pub struct UpscalerBinary {
     pub kind: UpscalerKind,
@@ -18,6 +20,8 @@ pub struct UpscalerBinary {
 }
 
 impl UpscalerBinary {
+    /// Runs the upscaler on an image sequence, writing an output sequence.
+    /// Why: We isolate invocation details and flags per binary in one place.
     pub fn run(&self, input_pattern: &Path, output_pattern: &Path, gpu: usize, tile_size: Option<u32>, threads: Option<u32>, model: &ModelSpec) -> Result<(), PixyError> {
         let mut cmd = match self.kind {
             UpscalerKind::RealEsrgan => {
@@ -49,6 +53,18 @@ impl UpscalerBinary {
         }
         Ok(())
     }
+}
+
+/// Finds the executable path for a given upscaler kind using platform-aware resolution.
+/// Why: Bundled resources and user PATHs vary across OSes and install methods.
+pub fn find_upscaler_binary(kind: UpscalerKind) -> Result<UpscalerBinary, PixyError> {
+    let name = match kind {
+        UpscalerKind::RealEsrgan => "realesrgan-ncnn-vulkan",
+        UpscalerKind::RealCugan => "realcugan-ncnn-vulkan",
+        UpscalerKind::Waifu2x => "waifu2x-ncnn-vulkan",
+    };
+    let path = resolve_tool(name)?;
+    Ok(UpscalerBinary { kind, path })
 }
 
 

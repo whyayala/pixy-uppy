@@ -7,6 +7,7 @@ use crate::frames::{extract_frames, FrameExtractOptions};
 use crate::models::ModelSpec;
 use crate::upscalers::{UpscalerBinary, UpscalerKind};
 
+/// Describes a complete upscale job, including I/O, model, device, and encode options.
 #[derive(Debug, Clone)]
 pub struct UpscaleJob {
     pub input: PathBuf,
@@ -24,12 +25,15 @@ pub struct UpscaleJob {
     pub container: String,
 }
 
+/// Simple progress struct for UI/CLI to display stages and percent.
 #[derive(Debug, Clone)]
 pub struct UpscaleJobProgress {
     pub stage: String,
     pub percent: f32,
 }
 
+/// Runs the end-to-end pipeline: extract frames → upscale → encode & remux.
+/// Why: Central orchestration to ensure audio/subs are stream-copied and video encoded.
 pub fn run_upscale_job(job: &UpscaleJob) -> Result<(), PixyError> {
     let temp_root = std::env::temp_dir().join("pixy-uppy");
     std::fs::create_dir_all(&temp_root)?;
@@ -72,7 +76,8 @@ pub fn run_upscale_job(job: &UpscaleJob) -> Result<(), PixyError> {
     args.extend(job.encoder.to_ffmpeg_args());
     args.push(job.output.to_string_lossy().to_string());
 
-    let status = Command::new("ffmpeg").args(args.clone()).status()?;
+    let ffmpeg = crate::paths::resolve_tool("ffmpeg")?;
+    let status = Command::new(ffmpeg).args(args.clone()).status()?;
     if !status.success() {
         return Err(PixyError::ProcessFailed { cmd: format!("ffmpeg {:?}", args), code: status.code(), stderr: String::new() });
     }
@@ -80,6 +85,8 @@ pub fn run_upscale_job(job: &UpscaleJob) -> Result<(), PixyError> {
     Ok(())
 }
 
+/// Builds a video filter string for optional post-scaling to the requested target.
+/// Why: Models may output fixed scales; use high-quality scaler to hit exact resolution.
 fn build_vf(job: &UpscaleJob) -> Option<String> {
     let mut vf_parts: Vec<String> = Vec::new();
     match (job.target_width, job.target_height, job.scale) {

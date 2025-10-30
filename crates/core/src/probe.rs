@@ -5,6 +5,7 @@ use serde::Deserialize;
 use which::which;
 
 use crate::error::PixyError;
+use crate::paths::resolve_tool;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct MediaInfo {
@@ -12,11 +13,11 @@ pub struct MediaInfo {
     pub streams: Vec<serde_json::Value>,
 }
 
+/// Probes a media file using ffprobe and returns streams and format JSON.
+/// Why: We need fps, resolution, and stream mapping to preserve audio/subs.
 pub fn probe_media(input: &Path) -> Result<MediaInfo, PixyError> {
-    if which("ffprobe").is_err() {
-        return Err(PixyError::CommandNotFound("ffprobe"));
-    }
-    let output = Command::new("ffprobe")
+    let ffprobe = resolve_tool("ffprobe")?;
+    let output = Command::new(ffprobe)
         .args([
             "-v",
             "error",

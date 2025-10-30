@@ -1,3 +1,4 @@
+/// Known upscaler model families supported out of the box.
 #[derive(Debug, Clone)]
 pub enum ModelKind {
     RealEsrgan,
@@ -5,6 +6,8 @@ pub enum ModelKind {
     Waifu2x,
 }
 
+/// Model specification including scale and optional denoise level.
+/// Why: Encapsulates selection metadata surfaced in CLI/GUI.
 #[derive(Debug, Clone)]
 pub struct ModelSpec {
     pub name: String,
@@ -14,6 +17,8 @@ pub struct ModelSpec {
     pub path: Option<String>,
 }
 
+/// Returns curated models suitable for live-action and animation sources.
+/// Why: Provides sane defaults without requiring users to hunt models.
 pub fn curated_models() -> Vec<ModelSpec> {
     vec![
         ModelSpec { name: "general_x4v3".into(), kind: ModelKind::RealEsrgan, scale: 4, denoise_level: None, path: None },
