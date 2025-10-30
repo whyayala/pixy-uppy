@@ -1,0 +1,23 @@
+[workspace]
+members = [
+    "crates/core",
+    "crates/cli",
+    "apps/desktop/src-tauri",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+authors = ["Pixy-Uppy Contributors"]
+repository = "https://example.com/pixy-uppy"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "deny"
+pedantic = "warn"
+nursery = "warn"
+
+

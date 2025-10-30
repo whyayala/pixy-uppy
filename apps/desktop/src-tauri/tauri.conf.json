@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/v2/schema.json",
+  "productName": "Pixy-Uppy",
+  "version": "0.1.0",
+  "identifier": "com.pixy.uppy",
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Pixy-Uppy",
+        "width": 1200,
+        "height": 800
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["msi", "appimage"],
+    "resources": [
+      "../../third_party/bin/**",
+      "../../assets/models/**"
+    ]
+  }
+}
+
+
