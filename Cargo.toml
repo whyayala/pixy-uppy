@@ -19,5 +19,3 @@ unsafe_code = "forbid"
 all = "deny"
 pedantic = "warn"
 nursery = "warn"
-
-
