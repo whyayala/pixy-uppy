@@ -21,22 +21,22 @@ install -m 0755 "$FFMPEG_EXTRACT_DIR/ffmpeg" "$BIN_DIR/ffmpeg"
 install -m 0755 "$FFMPEG_EXTRACT_DIR/ffprobe" "$BIN_DIR/ffprobe"
 
 # Real-ESRGAN NCNN Vulkan
-# Pick a suitable asset from releases if this  URL changes
-ESRGAN_ZIP_URL="https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/latest/download/realesrgan-ncnn-vulkan-20220424-ubuntu.zip"
+# Pin to the latest v0.2.0 Ubuntu asset to avoid GitHub's 404 for the old name
+ESRGAN_ZIP_URL="https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/download/v0.2.0/realesrgan-ncnn-vulkan-v0.2.0-ubuntu.zip"
 echo "Downloading Real-ESRGAN NCNN Vulkan..."
 curl -L "$ESRGAN_ZIP_URL" -o "$TMP_DIR/realesrgan.zip"
 unzip -q "$TMP_DIR/realesrgan.zip" -d "$TMP_DIR/realesrgan"
 install -m 0755 "$TMP_DIR/realesrgan"/*/realesrgan-ncnn-vulkan "$BIN_DIR/realesrgan-ncnn-vulkan" || install -m 0755 "$TMP_DIR/realesrgan"/realesrgan-ncnn-vulkan "$BIN_DIR/realesrgan-ncnn-vulkan"
 
 # Waifu2x NCNN Vulkan
-WAIFU2X_ZIP_URL="https://github.com/nihui/waifu2x-ncnn-vulkan/releases/latest/download/waifu2x-ncnn-vulkan-20220728-ubuntu.zip"
+WAIFU2X_ZIP_URL="https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20220728/waifu2x-ncnn-vulkan-20220728-ubuntu.zip"
 echo "Downloading Waifu2x NCNN Vulkan..."
 curl -L "$WAIFU2X_ZIP_URL" -o "$TMP_DIR/waifu2x.zip"
 unzip -q "$TMP_DIR/waifu2x.zip" -d "$TMP_DIR/waifu2x"
 install -m 0755 "$TMP_DIR/waifu2x"/*/waifu2x-ncnn-vulkan "$BIN_DIR/waifu2x-ncnn-vulkan" || install -m 0755 "$TMP_DIR/waifu2x"/waifu2x-ncnn-vulkan "$BIN_DIR/waifu2x-ncnn-vulkan"
 
 # Real-CUGAN NCNN Vulkan
-REALCUGAN_ZIP_URL="https://github.com/nihui/realcugan-ncnn-vulkan/releases/latest/download/realcugan-ncnn-vulkan-20220728-ubuntu.zip"
+REALCUGAN_ZIP_URL="https://github.com/nihui/realcugan-ncnn-vulkan/releases/download/20220728/realcugan-ncnn-vulkan-20220728-ubuntu.zip"
 echo "Downloading Real-CUGAN NCNN Vulkan..."
 curl -L "$REALCUGAN_ZIP_URL" -o "$TMP_DIR/realcugan.zip"
 unzip -q "$TMP_DIR/realcugan.zip" -d "$TMP_DIR/realcugan"

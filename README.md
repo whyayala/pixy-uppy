@@ -14,6 +14,7 @@ Work in progress. See `pix.plan.md` for scope.
 
 ## Requirements
 - Windows 10+ or Linux (x86_64)
+- `rustup` for managing Rust toolchains
 - Rust (stable) with `rustfmt` and `clippy`
 - Node.js 20+ for GUI
 - Vulkan-capable GPU and drivers (AMD/NVIDIA/Intel)
