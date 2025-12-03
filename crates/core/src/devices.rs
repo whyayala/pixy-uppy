@@ -30,5 +30,3 @@ pub fn detect_vulkan_devices(binary: &str) -> Result<Vec<VulkanDevice>, PixyErro
     }
     Ok(devices)
 }
-
-

@@ -1,9 +1,9 @@
 pub mod devices;
 pub mod encoder;
 pub mod error;
-pub mod paths;
 pub mod frames;
 pub mod models;
+pub mod paths;
 pub mod pipeline;
 pub mod probe;
 pub mod upscalers;
@@ -11,11 +11,9 @@ pub mod upscalers;
 pub use devices::{detect_vulkan_devices, VulkanDevice};
 pub use encoder::{EncoderKind, EncoderOptions};
 pub use error::PixyError;
-pub use paths::{platform_dir, resolve_tool};
 pub use frames::{FrameExtractOptions, Prefilter};
 pub use models::{ModelKind, ModelSpec};
+pub use paths::{platform_dir, resolve_tool};
 pub use pipeline::{run_upscale_job, UpscaleJob, UpscaleJobProgress};
 pub use probe::{probe_media, MediaInfo};
 pub use upscalers::{UpscalerBinary, UpscalerKind};
-
-

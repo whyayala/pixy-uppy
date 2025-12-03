@@ -30,19 +30,21 @@ impl EncoderOptions {
     pub fn to_ffmpeg_args(&self) -> Vec<String> {
         let mut args = Vec::new();
         args.push("-c:v".into());
-        args.push(match self.encoder {
-            EncoderKind::H264Nvenc => "h264_nvenc",
-            EncoderKind::HevcNvenc => "hevc_nvenc",
-            EncoderKind::H264Amf => "h264_amf",
-            EncoderKind::HevcAmf => "hevc_amf",
-            EncoderKind::H264Qsv => "h264_qsv",
-            EncoderKind::HevcQsv => "hevc_qsv",
-            EncoderKind::H264Vaapi => "h264_vaapi",
-            EncoderKind::HevcVaapi => "hevc_vaapi",
-            EncoderKind::Libx264 => "libx264",
-            EncoderKind::Libx265 => "libx265",
-        }
-        .into());
+        args.push(
+            match self.encoder {
+                EncoderKind::H264Nvenc => "h264_nvenc",
+                EncoderKind::HevcNvenc => "hevc_nvenc",
+                EncoderKind::H264Amf => "h264_amf",
+                EncoderKind::HevcAmf => "hevc_amf",
+                EncoderKind::H264Qsv => "h264_qsv",
+                EncoderKind::HevcQsv => "hevc_qsv",
+                EncoderKind::H264Vaapi => "h264_vaapi",
+                EncoderKind::HevcVaapi => "hevc_vaapi",
+                EncoderKind::Libx264 => "libx264",
+                EncoderKind::Libx265 => "libx265",
+            }
+            .into(),
+        );
 
         if let Some(preset) = &self.preset {
             args.push("-preset".into());
@@ -63,5 +65,3 @@ impl EncoderOptions {
         args
     }
 }
-
-

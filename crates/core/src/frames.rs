@@ -33,13 +33,20 @@ pub struct FrameExtractOptions {
 
 impl Default for FrameExtractOptions {
     fn default() -> Self {
-        Self { prefilter: Prefilter::None, frame_format: "png".into() }
+        Self {
+            prefilter: Prefilter::None,
+            frame_format: "png".into(),
+        }
     }
 }
 
 /// Extracts frames from the input using ffmpeg to an output directory.
 /// Why: Upscaler binaries operate on image sequences; we preserve PTS for sync.
-pub fn extract_frames(input: &Path, out_dir: &Path, opts: &FrameExtractOptions) -> Result<PathBuf, PixyError> {
+pub fn extract_frames(
+    input: &Path,
+    out_dir: &Path,
+    opts: &FrameExtractOptions,
+) -> Result<PathBuf, PixyError> {
     std::fs::create_dir_all(out_dir)?;
     let pattern = out_dir.join(format!("%08d.{}", opts.frame_format));
     let mut args = vec![
@@ -62,9 +69,11 @@ pub fn extract_frames(input: &Path, out_dir: &Path, opts: &FrameExtractOptions) 
     let ffmpeg = resolve_tool("ffmpeg")?;
     let status = Command::new(ffmpeg).args(args.clone()).status()?;
     if !status.success() {
-        return Err(PixyError::ProcessFailed { cmd: format!("ffmpeg {:?}", args), code: status.code(), stderr: String::new() });
+        return Err(PixyError::ProcessFailed {
+            cmd: format!("ffmpeg {:?}", args),
+            code: status.code(),
+            stderr: String::new(),
+        });
     }
     Ok(pattern)
 }
-
-

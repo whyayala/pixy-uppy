@@ -45,7 +45,14 @@ pub fn run_upscale_job(job: &UpscaleJob) -> Result<(), PixyError> {
     let upscaled_pattern = upscaled_dir.join(frames_pattern.file_name().unwrap());
     std::fs::create_dir_all(&upscaled_dir)?;
 
-    job.upscaler.run(&frames_pattern, &upscaled_pattern, job.gpu_index, job.tile_size, job.threads, &job.model)?;
+    job.upscaler.run(
+        &frames_pattern,
+        &upscaled_pattern,
+        job.gpu_index,
+        job.tile_size,
+        job.threads,
+        &job.model,
+    )?;
 
     let vf = build_vf(job);
     let mut args = vec![
@@ -72,14 +79,21 @@ pub fn run_upscale_job(job: &UpscaleJob) -> Result<(), PixyError> {
         "copy".into(),
     ];
 
-    if let Some(vf) = vf { args.push("-vf".into()); args.push(vf); }
+    if let Some(vf) = vf {
+        args.push("-vf".into());
+        args.push(vf);
+    }
     args.extend(job.encoder.to_ffmpeg_args());
     args.push(job.output.to_string_lossy().to_string());
 
     let ffmpeg = crate::paths::resolve_tool("ffmpeg")?;
     let status = Command::new(ffmpeg).args(args.clone()).status()?;
     if !status.success() {
-        return Err(PixyError::ProcessFailed { cmd: format!("ffmpeg {:?}", args), code: status.code(), stderr: String::new() });
+        return Err(PixyError::ProcessFailed {
+            cmd: format!("ffmpeg {:?}", args),
+            code: status.code(),
+            stderr: String::new(),
+        });
     }
 
     Ok(())
@@ -96,7 +110,9 @@ fn build_vf(job: &UpscaleJob) -> Option<String> {
         (None, None, Some(_s)) => { /* rely on model */ }
         _ => {}
     }
-    if vf_parts.is_empty() { None } else { Some(vf_parts.join(",")) }
+    if vf_parts.is_empty() {
+        None
+    } else {
+        Some(vf_parts.join(","))
+    }
 }
-
-

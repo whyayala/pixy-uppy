@@ -9,7 +9,7 @@ use pixy_core::pipeline::{run_upscale_job, UpscaleJob};
 use pixy_core::upscalers::{find_upscaler_binary, UpscalerBinary, UpscalerKind};
 
 #[derive(Parser)]
-#[command(name = "pixy-uppy")] 
+#[command(name = "pixy-uppy")]
 #[command(about = "Video upscaler (NCNN/Vulkan + FFmpeg)")]
 struct Cli {
     #[command(subcommand)]
@@ -58,7 +58,18 @@ struct ArgsUpscale {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-enum Enc { H264Nvenc, HevcNvenc, H264Amf, HevcAmf, H264Qsv, HevcQsv, H264Vaapi, HevcVaapi, Libx264, Libx265 }
+enum Enc {
+    H264Nvenc,
+    HevcNvenc,
+    H264Amf,
+    HevcAmf,
+    H264Qsv,
+    HevcQsv,
+    H264Vaapi,
+    HevcVaapi,
+    Libx264,
+    Libx265,
+}
 
 impl From<Enc> for EncoderKind {
     fn from(e: Enc) -> Self {
@@ -78,11 +89,21 @@ impl From<Enc> for EncoderKind {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-enum Filter { Yadif, Hqdn3d, Deband, None }
+enum Filter {
+    Yadif,
+    Hqdn3d,
+    Deband,
+    None,
+}
 
 impl From<Filter> for Prefilter {
     fn from(f: Filter) -> Self {
-        match f { Filter::Yadif => Prefilter::Yadif, Filter::Hqdn3d => Prefilter::Hqdn3d, Filter::Deband => Prefilter::Deband, Filter::None => Prefilter::None }
+        match f {
+            Filter::Yadif => Prefilter::Yadif,
+            Filter::Hqdn3d => Prefilter::Hqdn3d,
+            Filter::Deband => Prefilter::Deband,
+            Filter::None => Prefilter::None,
+        }
     }
 }
 
@@ -96,22 +117,34 @@ fn main() {
                 .or_else(|_| detect_vulkan_devices("realcugan-ncnn-vulkan"))
                 .or_else(|_| detect_vulkan_devices("waifu2x-ncnn-vulkan"))
                 .unwrap_or_default();
-            if devices.is_empty() { println!("No devices detected (binary not found or no Vulkan devices)"); }
-            for d in devices { println!("{}: {}", d.index, d.name); }
+            if devices.is_empty() {
+                println!("No devices detected (binary not found or no Vulkan devices)");
+            }
+            for d in devices {
+                println!("{}: {}", d.index, d.name);
+            }
         }
         Commands::Models => {
             for m in curated_models() {
-                let kind = match m.kind { ModelKind::RealEsrgan => "realesrgan", ModelKind::RealCugan => "realcugan", ModelKind::Waifu2x => "waifu2x" };
+                let kind = match m.kind {
+                    ModelKind::RealEsrgan => "realesrgan",
+                    ModelKind::RealCugan => "realcugan",
+                    ModelKind::Waifu2x => "waifu2x",
+                };
                 println!("{}\t(kind: {}, scale: {}x)", m.name, kind, m.scale);
             }
         }
         Commands::Upscale(args) => {
-            let model = curated_models().into_iter().find(|m| m.name == args.model).expect("model not found");
+            let model = curated_models()
+                .into_iter()
+                .find(|m| m.name == args.model)
+                .expect("model not found");
             let upscaler = match model.kind {
                 ModelKind::RealEsrgan => find_upscaler_binary(UpscalerKind::RealEsrgan),
                 ModelKind::RealCugan => find_upscaler_binary(UpscalerKind::RealCugan),
                 ModelKind::Waifu2x => find_upscaler_binary(UpscalerKind::Waifu2x),
-            }.expect("upscaler binary not found");
+            }
+            .expect("upscaler binary not found");
 
             let job = UpscaleJob {
                 input: args.input,
@@ -124,13 +157,24 @@ fn main() {
                 target_width: args.width,
                 target_height: args.height,
                 scale: args.scale,
-                extract: FrameExtractOptions { prefilter: args.prefilter.into(), frame_format: args.frame_format },
-                encoder: EncoderOptions { encoder: args.encoder.into(), preset: args.preset, tune: args.tune, crf: args.crf, pix_fmt: Some("yuv420p".into()), container: None },
+                extract: FrameExtractOptions {
+                    prefilter: args.prefilter.into(),
+                    frame_format: args.frame_format,
+                },
+                encoder: EncoderOptions {
+                    encoder: args.encoder.into(),
+                    preset: args.preset,
+                    tune: args.tune,
+                    crf: args.crf,
+                    pix_fmt: Some("yuv420p".into()),
+                    container: None,
+                },
                 container: "mkv".into(),
             };
-            if let Err(e) = run_upscale_job(&job) { eprintln!("error: {}", e); std::process::exit(1); }
+            if let Err(e) = run_upscale_job(&job) {
+                eprintln!("error: {}", e);
+                std::process::exit(1);
+            }
         }
     }
 }
-
-

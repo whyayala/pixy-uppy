@@ -44,7 +44,8 @@ pub fn probe_media(input: &Path) -> Result<MediaInfo, PixyError> {
     }
 
     let parsed: ProbeOut = serde_json::from_slice(&output.stdout)?;
-    Ok(MediaInfo { format: parsed.format, streams: parsed.streams })
+    Ok(MediaInfo {
+        format: parsed.format,
+        streams: parsed.streams,
+    })
 }
-
-

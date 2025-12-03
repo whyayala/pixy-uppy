@@ -21,12 +21,40 @@ pub struct ModelSpec {
 /// Why: Provides sane defaults without requiring users to hunt models.
 pub fn curated_models() -> Vec<ModelSpec> {
     vec![
-        ModelSpec { name: "general_x4v3".into(), kind: ModelKind::RealEsrgan, scale: 4, denoise_level: None, path: None },
-        ModelSpec { name: "general_wdn_x4v3".into(), kind: ModelKind::RealEsrgan, scale: 4, denoise_level: None, path: None },
-        ModelSpec { name: "realesr-animevideov3".into(), kind: ModelKind::RealEsrgan, scale: 4, denoise_level: None, path: None },
-        ModelSpec { name: "realcugan_se_x2".into(), kind: ModelKind::RealCugan, scale: 2, denoise_level: Some(1), path: None },
-        ModelSpec { name: "waifu2x_cunet_x2".into(), kind: ModelKind::Waifu2x, scale: 2, denoise_level: Some(1), path: None },
+        ModelSpec {
+            name: "general_x4v3".into(),
+            kind: ModelKind::RealEsrgan,
+            scale: 4,
+            denoise_level: None,
+            path: None,
+        },
+        ModelSpec {
+            name: "general_wdn_x4v3".into(),
+            kind: ModelKind::RealEsrgan,
+            scale: 4,
+            denoise_level: None,
+            path: None,
+        },
+        ModelSpec {
+            name: "realesr-animevideov3".into(),
+            kind: ModelKind::RealEsrgan,
+            scale: 4,
+            denoise_level: None,
+            path: None,
+        },
+        ModelSpec {
+            name: "realcugan_se_x2".into(),
+            kind: ModelKind::RealCugan,
+            scale: 2,
+            denoise_level: Some(1),
+            path: None,
+        },
+        ModelSpec {
+            name: "waifu2x_cunet_x2".into(),
+            kind: ModelKind::Waifu2x,
+            scale: 2,
+            denoise_level: Some(1),
+            path: None,
+        },
     ]
 }
-
-

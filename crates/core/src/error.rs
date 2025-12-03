@@ -17,7 +17,9 @@ pub enum PixyError {
     InvalidArgument(&'static str),
 
     #[error("Process failed: {cmd} (code {code:?})\n{stderr}")]
-    ProcessFailed { cmd: String, code: Option<i32>, stderr: String },
+    ProcessFailed {
+        cmd: String,
+        code: Option<i32>,
+        stderr: String,
+    },
 }
-
-
