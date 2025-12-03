@@ -23,9 +23,7 @@ pub fn detect_vulkan_devices() -> Result<Vec<VulkanDevice>, PixyError> {
             Ok(Vec::new())
         }
         Err(NativeDetectError::Other(reason)) => {
-            eprintln!(
-                "warning: Native Vulkan device enumeration failed ({reason})."
-            );
+            eprintln!("warning: Native Vulkan device enumeration failed ({reason}).");
             Ok(Vec::new())
         }
     }
@@ -34,8 +32,12 @@ pub fn detect_vulkan_devices() -> Result<Vec<VulkanDevice>, PixyError> {
 fn detect_vulkan_devices_native() -> Result<Vec<VulkanDevice>, NativeDetectError> {
     let entry = unsafe {
         Entry::load().map_err(|err| match err {
-            LoadingError::LibraryLoadFailure(e) => NativeDetectError::LoaderUnavailable(e.to_string()),
-            LoadingError::MissingEntryPoint(e) => NativeDetectError::Other(format!("missing entry point: {e}")),
+            LoadingError::LibraryLoadFailure(e) => {
+                NativeDetectError::LoaderUnavailable(e.to_string())
+            }
+            LoadingError::MissingEntryPoint(e) => {
+                NativeDetectError::Other(format!("missing entry point: {e}"))
+            }
         })?
     };
 
@@ -89,7 +91,9 @@ fn detect_vulkan_devices_native() -> Result<Vec<VulkanDevice>, NativeDetectError
                     .collect::<Vec<_>>();
                 Ok(list)
             }
-            Err(err) => Err(NativeDetectError::Other(format!("enumerate physical devices: {err}"))),
+            Err(err) => Err(NativeDetectError::Other(format!(
+                "enumerate physical devices: {err}"
+            ))),
         }
     };
 
