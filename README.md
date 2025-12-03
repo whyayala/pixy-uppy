@@ -127,5 +127,16 @@ Acceptance checklist
 - Encoding plays in VLC/MPV and GPU usage spikes during upscaling
 - Visual inspection shows improved detail without excessive artifacts
 
+## Troubleshooting
+
+### AMD GCN 1.x (e.g., Radeon HD 7850) Vulkan support on Linux
+Older Southern Islands GPUs need the `amdgpu` kernel driver (not `radeon`) for Vulkan:
+1. Install firmware + tooling: `sudo apt install firmware-amd-graphics mesa-vulkan-drivers vulkan-tools` (adjust per distro).
+2. Force `amdgpu` for SI cards:  
+   `echo 'options amdgpu si_support=1 radeon.si_support=0' | sudo tee /etc/modprobe.d/amdgpu.conf`
+3. Add the same flags to the kernel command line (`/etc/default/grub` → `GRUB_CMDLINE_LINUX[_DEFAULT]+=amdgpu.si_support=1 radeon.si_support=0`) and run `sudo update-grub`.
+4. Regenerate initramfs (`sudo update-initramfs -u -k all`, `mkinitcpio -P`, etc.) and reboot.
+5. Verify: `lspci -k | grep -EA3 'VGA|3D'` should show `Kernel driver in use: amdgpu`, and `vulkaninfo --summary` should list the AMD GPU (not `llvmpipe`).
+
 ## License
 MIT
