@@ -2,7 +2,6 @@ use std::path::Path;
 use std::process::Command;
 
 use serde::Deserialize;
-use which::which;
 
 use crate::error::PixyError;
 use crate::paths::resolve_tool;

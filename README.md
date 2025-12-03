@@ -18,6 +18,7 @@ Work in progress. See `pix.plan.md` for scope.
 - Rust (stable) with `rustfmt` and `clippy`
 - Node.js 20+ for GUI
 - Vulkan-capable GPU and drivers (AMD/NVIDIA/Intel)
+- Vulkan loader/runtime (`libvulkan.so`, `vulkan-1.dll`, etc.) for device detection – e.g. `sudo apt install mesa-vulkan-drivers vulkan-tools`
 
 ## Binaries and Models
 Pixy-Uppy looks for tools in this order:

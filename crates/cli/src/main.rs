@@ -6,7 +6,7 @@ use pixy_core::encoder::{EncoderKind, EncoderOptions};
 use pixy_core::frames::{FrameExtractOptions, Prefilter};
 use pixy_core::models::{curated_models, ModelKind};
 use pixy_core::pipeline::{run_upscale_job, UpscaleJob};
-use pixy_core::upscalers::{find_upscaler_binary, UpscalerBinary, UpscalerKind};
+use pixy_core::upscalers::{find_upscaler_binary, UpscalerKind};
 
 #[derive(Parser)]
 #[command(name = "pixy-uppy")]
@@ -112,13 +112,9 @@ fn main() {
     let cli = Cli::parse();
     match cli.command {
         Commands::Devices => {
-            // try Real-ESRGAN first; fall back to others
-            let devices = detect_vulkan_devices("realesrgan-ncnn-vulkan")
-                .or_else(|_| detect_vulkan_devices("realcugan-ncnn-vulkan"))
-                .or_else(|_| detect_vulkan_devices("waifu2x-ncnn-vulkan"))
-                .unwrap_or_default();
+            let devices = detect_vulkan_devices().unwrap_or_default();
             if devices.is_empty() {
-                println!("No devices detected (binary not found or no Vulkan devices)");
+                println!("No devices detected (Vulkan runtime missing or no compatible GPUs)");
             }
             for d in devices {
                 println!("{}: {}", d.index, d.name);

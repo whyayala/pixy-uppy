@@ -5,7 +5,7 @@ use crate::encoder::EncoderOptions;
 use crate::error::PixyError;
 use crate::frames::{extract_frames, FrameExtractOptions};
 use crate::models::ModelSpec;
-use crate::upscalers::{UpscalerBinary, UpscalerKind};
+use crate::upscalers::UpscalerBinary;
 
 /// Describes a complete upscale job, including I/O, model, device, and encode options.
 #[derive(Debug, Clone)]
