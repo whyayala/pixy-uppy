@@ -21,12 +21,21 @@ install -m 0755 "$FFMPEG_EXTRACT_DIR/ffmpeg" "$BIN_DIR/ffmpeg"
 install -m 0755 "$FFMPEG_EXTRACT_DIR/ffprobe" "$BIN_DIR/ffprobe"
 
 # Real-ESRGAN NCNN Vulkan
-# Pin to the latest v0.2.0 Ubuntu asset to avoid GitHub's 404 for the old name
-ESRGAN_ZIP_URL="https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/download/v0.2.0/realesrgan-ncnn-vulkan-v0.2.0-ubuntu.zip"
+# Portable build (includes pre-trained models under models/)
+# Portable build hosted on Real-ESRGAN repo (includes pre-trained models)
+ESRGAN_ZIP_URL="https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip"
 echo "Downloading Real-ESRGAN NCNN Vulkan..."
 curl -L "$ESRGAN_ZIP_URL" -o "$TMP_DIR/realesrgan.zip"
 unzip -q "$TMP_DIR/realesrgan.zip" -d "$TMP_DIR/realesrgan"
-install -m 0755 "$TMP_DIR/realesrgan"/*/realesrgan-ncnn-vulkan "$BIN_DIR/realesrgan-ncnn-vulkan" || install -m 0755 "$TMP_DIR/realesrgan"/realesrgan-ncnn-vulkan "$BIN_DIR/realesrgan-ncnn-vulkan"
+ESRGAN_EXTRACT_DIR="$TMP_DIR/realesrgan"
+install -m 0755 "$ESRGAN_EXTRACT_DIR/realesrgan-ncnn-vulkan" "$BIN_DIR/realesrgan-ncnn-vulkan"
+MODEL_SRC_DIR="$ESRGAN_EXTRACT_DIR/models"
+if [[ -d "$MODEL_SRC_DIR" ]]; then
+  install -d "$BIN_DIR/models"
+  cp -a "$MODEL_SRC_DIR/." "$BIN_DIR/models/"
+else
+  echo "Warning: Real-ESRGAN models directory not found in archive" >&2
+fi
 
 # Waifu2x NCNN Vulkan
 WAIFU2X_ZIP_URL="https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20220728/waifu2x-ncnn-vulkan-20220728-ubuntu.zip"

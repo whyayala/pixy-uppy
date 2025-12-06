@@ -30,6 +30,9 @@ Place the following executables in `third_party/bin/<platform>/` or ensure they�
 - `ffmpeg`, `ffprobe`
 - `realesrgan-ncnn-vulkan`, `waifu2x-ncnn-vulkan`, `realcugan-ncnn-vulkan`
 
+Real-ESRGAN publishes a portable NCNN/Vulkan bundle that already contains the binary plus four pre-trained models (`realesrgan-x4plus`, `realesrgan-x4plus-anime`, and the `realesr-animevideov3` x2/x3/x4 variants). Download `realesrgan-ncnn-vulkan-20220424-ubuntu.zip` from the v0.2.5.0 release and place both `realesrgan-ncnn-vulkan` and the `models/` directory under `third_party/bin/<platform>/`. The Linux fetch script automates this step for `third_party/bin/linux64` by copying the entire `models` folder next to the binary.  
+[Real-ESRGAN portable release](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip)
+
 Curated models may be shipped under `assets/models/` (or use models bundled with the binaries).
 
 Quick setup using helper scripts:
@@ -46,7 +49,7 @@ Run examples:
 ./target/release/pixy-uppy devices
 ./target/release/pixy-uppy models
 ./target/release/pixy-uppy upscale \
-  -i input.mkv -o output.mkv -m general_x4v3 \
+  -i input.mkv -o output.mkv -m realesrgan-x4plus \
   --gpu 0 --encoder hevc_nvenc --preset p4 --crf 20
 ```
 
@@ -96,7 +99,7 @@ third_party/bin/linux64/ffmpeg -y -f lavfi -i testsrc2=size=640x360:rate=24 -t 5
 
 3) Upscale with Real-ESRGAN
 ```
-./target/release/pixy-uppy upscale -i testsrc_360p.mp4 -o testsrc_1440p.mkv -m general_x4v3 --gpu 0 --encoder hevc_nvenc --preset p4 --crf 20
+./target/release/pixy-uppy upscale -i testsrc_360p.mp4 -o testsrc_1440p.mkv -m realesrgan-x4plus --gpu 0 --encoder hevc_nvenc --preset p4 --crf 20
 ```
 
 4) Verify streams and resolution
@@ -120,7 +123,7 @@ ffmpeg -i testsrc_360p.mp4 -i ds.mkv -lavfi "ssim;[0:v][1:v]psnr" -f null -
 ```
 
 7) Real content test
-- Try a short scene (10–30s) from a live-action and an animation source. Adjust `--tile-size` and `--threads` if VRAM errors occur. For 1080p→4K, either `-m general_x4v3` with post-scale, or a `x2` model twice.
+- Try a short scene (10–30s) from a live-action and an animation source. Adjust `--tile-size` and `--threads` if VRAM errors occur. For 1080p→4K, either `-m realesrgan-x4plus` with post-scale, or run a `x2` model twice.
 
 Acceptance checklist
 - Output resolution matches requested (via ffprobe)

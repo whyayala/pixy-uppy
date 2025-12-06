@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -34,11 +35,13 @@ impl UpscalerBinary {
         let mut cmd = match self.kind {
             UpscalerKind::RealEsrgan => {
                 let mut c = Command::new(&self.path);
+                let input_arg = sequence_dir_arg(input_pattern);
+                let output_arg = sequence_dir_arg(output_pattern);
                 c.args([
                     "-i",
-                    input_pattern.to_string_lossy().as_ref(),
+                    input_arg.as_ref(),
                     "-o",
-                    output_pattern.to_string_lossy().as_ref(),
+                    output_arg.as_ref(),
                     "-n",
                     &model.name,
                     "-g",
@@ -100,6 +103,16 @@ impl UpscalerBinary {
         }
         Ok(())
     }
+}
+
+fn sequence_dir_arg(path: &Path) -> Cow<'_, str> {
+    let as_str = path.to_string_lossy();
+    if as_str.contains('%') {
+        if let Some(parent) = path.parent() {
+            return Cow::Owned(parent.to_string_lossy().to_string());
+        }
+    }
+    as_str
 }
 
 /// Finds the executable path for a given upscaler kind using platform-aware resolution.

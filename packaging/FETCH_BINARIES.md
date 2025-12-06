@@ -43,9 +43,10 @@ Verify:
 - Use distro packages or static build (e.g., `https://johnvansickle.com/ffmpeg/`)
 - Place `ffmpeg` and `ffprobe` into `third_party/bin/linux64/` or ensure on PATH
 
-2) Real-ESRGAN (NCNN Vulkan)
-- Releases: `https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases`
-- Make executable: `chmod +x third_party/bin/linux64/realesrgan-ncnn-vulkan`
+2) Real-ESRGAN (portable NCNN Vulkan bundle)
+- Download `realesrgan-ncnn-vulkan-20220424-ubuntu.zip` from the Real-ESRGAN v0.2.5.0 release: [portable binary](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip)
+- Extract `realesrgan-ncnn-vulkan` to `third_party/bin/linux64/` and `chmod +x` it
+- Copy the bundled `models/` directory into `third_party/bin/linux64/models/` so the `.param/.bin` files sit next to the binary (the `fetch_binaries_linux.sh` script performs this automatically)
 
 3) Waifu2x / Real-CUGAN (NCNN Vulkan)
 - Releases: `https://github.com/nihui/waifu2x-ncnn-vulkan/releases`

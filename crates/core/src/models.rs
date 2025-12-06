@@ -22,23 +22,37 @@ pub struct ModelSpec {
 pub fn curated_models() -> Vec<ModelSpec> {
     vec![
         ModelSpec {
-            name: "general_x4v3".into(),
+            name: "realesrgan-x4plus".into(),
             kind: ModelKind::RealEsrgan,
             scale: 4,
             denoise_level: None,
             path: None,
         },
         ModelSpec {
-            name: "general_wdn_x4v3".into(),
+            name: "realesrgan-x4plus-anime".into(),
             kind: ModelKind::RealEsrgan,
             scale: 4,
             denoise_level: None,
             path: None,
         },
         ModelSpec {
-            name: "realesr-animevideov3".into(),
+            name: "realesr-animevideov3-x4".into(),
             kind: ModelKind::RealEsrgan,
             scale: 4,
+            denoise_level: None,
+            path: None,
+        },
+        ModelSpec {
+            name: "realesr-animevideov3-x3".into(),
+            kind: ModelKind::RealEsrgan,
+            scale: 3,
+            denoise_level: None,
+            path: None,
+        },
+        ModelSpec {
+            name: "realesr-animevideov3-x2".into(),
+            kind: ModelKind::RealEsrgan,
+            scale: 2,
             denoise_level: None,
             path: None,
         },
